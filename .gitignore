@@ -1,0 +1,10 @@
+node_modules/
+npm-debug.log
+
+.idea
+*.ide/
+
+*~
+.DS_Store
+
+/build

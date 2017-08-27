@@ -1,0 +1,22 @@
+{
+  "name": "zen",
+  "version": "0.0.0",
+  "description": "A WebGL Game Engine",
+  "keywords": [
+    "zen",
+    "game",
+    "webgl"
+  ],
+  "author": "shawn0326",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^2.4.2",
+    "uglify-js": "^3.0.27"
+  },
+  "scripts": {
+    "build": "tsc && npm run uglify",
+    "uglify": "uglifyjs build/zen.js -o build/zen.min.js",
+    "examples": "tsc -p examples"
+  }
+}
