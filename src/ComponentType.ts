@@ -4,7 +4,9 @@ namespace zen {
         Camera,
         Script,
         MeshRenderer,
-        MeshFilter
+        MeshFilter,
+        AudioSource,
+        AudioListener
     }
     
 }

@@ -88,18 +88,69 @@ var Walk = (function (_super) {
         return _this;
     }
     Walk.prototype.start = function (app) {
+        this.speed = 0.00001;
     };
     Walk.prototype.update = function (deltaTime) {
         this.count += deltaTime;
-        if (this.count >= 1) {
-            console.log("move:" + this.count + ", speed: " + this.speed);
+        if (this.gameObject) {
+            var p = this.gameObject.getPosition();
+            // console.log(deltaTime);
+            // this.gameObject.setPosition(0, 0, 2);
+            this.gameObject.setPosition(Math.cos(this.count) * 2, 0, Math.sin(this.count) * 2);
+        }
+        if (this.count >= Math.PI * 2) {
+            // console.log("move:" + this.count + ", speed: " + this.speed);
             this.count = 0;
         }
     };
     return Walk;
 }(zen.Behaviour));
+function loadArrayBuffer(url, sucCallback, errCallback) {
+    var req = new XMLHttpRequest();
+    req.open("GET", url);
+    req.responseType = "arraybuffer";
+    req.onreadystatechange = function () {
+        if (req.readyState == 4) {
+            if (req.status == 404) {
+                errCallback();
+            }
+            else {
+                sucCallback(req.response);
+            }
+        }
+    };
+    req.onerror = function (e) {
+        errCallback();
+    };
+    req.send();
+}
 var app = new zen.Application();
 app.start();
+var init = false;
+document.onclick = function () {
+    if (init)
+        return;
+    zen.Audio.active();
+    loadArrayBuffer("sound.mp3", function (buffer) {
+        var audio = new zen.AudioAsset("sound.mp3");
+        audio.buffer = buffer;
+        zen.Audio.decodeAudioData(audio, function () {
+            audio.buffer = buffer;
+            audioSourceComponent.audio = audio;
+            audioSourceComponent.use3D = true;
+            audioSourceComponent.loop = true;
+            audioSourceComponent.play();
+        }, function () { });
+    }, function () { });
+    var audioListenerComponent = new zen.AudioListenerComponent();
+    empty2.addComponent(audioListenerComponent);
+    init = true;
+};
+var empty = new zen.GameObject(app);
+// empty.enabled = false;
+var empty2 = new zen.GameObject(app);
+empty2.setPosition(2, 0, 0);
+empty.addChild(empty2);
 var object = new zen.GameObject(app);
 object.name = "object";
 var scriptComponent = new zen.ScriptComponent();
@@ -108,8 +159,12 @@ var walk = new Walk();
 walk.speed = 10;
 scriptComponent.addScript(speak);
 scriptComponent.addScript(walk);
+// scriptComponent.enabled = false;
 object.addComponent(scriptComponent);
-app.sceneManager.activeScene.addChild(object);
+var audioSourceComponent = new zen.AudioSourceComponent();
+object.addComponent(audioSourceComponent);
+empty.addChild(object);
+app.sceneManager.activeScene.addChild(empty);
 // zen.waitForSeconds().then(function() {
 //     console.log("11");
 // }); 

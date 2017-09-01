@@ -13,9 +13,9 @@ namespace zen.math {
         }
 
         public set(x:number, y:number, z:number):Vector3 {
-            this.x += x;
-            this.x += y;
-            this.x += z;
+            this.x = x;
+            this.y = y;
+            this.z = z;
             return this;
         }
 

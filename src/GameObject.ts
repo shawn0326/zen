@@ -4,8 +4,6 @@ namespace zen {
 
     export class GameObject extends Transform3D {
 
-        public enable:boolean = true;
-
         public name:string = "GameObject";
 
         public tag:string = "";

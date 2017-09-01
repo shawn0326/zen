@@ -1,8 +1,8 @@
 namespace zen {
 
-    export class MaterialAsset extends Asset {
-        
-        shader:ShaderAsset;
+    export class AudioAsset extends Asset {
+
+        public buffer:ArrayBuffer;
 
         public serialize():string {
             return "";

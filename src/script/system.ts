@@ -7,7 +7,7 @@ namespace zen {
         update(deltaTime:number) {
             for(let key in this._components) {
                 let script = this._components[key] as ScriptComponent;
-                script.update(this._app, deltaTime);
+                script.enabled && script.update(this._app, deltaTime);
             }
         }
         

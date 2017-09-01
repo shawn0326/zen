@@ -5,7 +5,7 @@ namespace zen {
     export class CameraComponentSystem extends System {
 
         update(deltaTime:number) {
-
+            // TODO
         }
 
     }

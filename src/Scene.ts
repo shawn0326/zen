@@ -13,11 +13,11 @@ namespace zen {
         }
 
         public activate() {
-            // activate this scene
+            this.root.enabledInHierarchy = true;
         }
 
         public inactivate() {
-            // inactivate this scene
+            this.root.enabledInHierarchy = false;
         }
 
         public addChild(child:GameObject) {

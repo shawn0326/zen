@@ -15,6 +15,10 @@ namespace zen {
         public useLightProbes:boolean = false;
 
         public render(app:Application, deltaTime:number) {
+            if(!this.gameObject) {
+                return;
+            }
+            
             let meshFilter:MeshFilterComponent = this.gameObject.getComponent<MeshFilterComponent>(ComponentType.MeshFilter);
             let mesh:MeshAsset = meshFilter.mesh;
         }
