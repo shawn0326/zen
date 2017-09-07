@@ -21,6 +21,14 @@ namespace zen {
             
             let meshFilter:MeshFilterComponent = this.gameObject.getComponent<MeshFilterComponent>(ComponentType.MeshFilter);
             let mesh:MeshAsset = meshFilter.mesh;
+
+            let subMeshes:MeshInfo[] = mesh.getSubMeshes();
+            for(let i = 0, l = subMeshes.length; i < l; i++) {
+                let info = subMeshes[i];
+                let matId = info.materialId;
+                let material = this.materials[matId];
+                Renderer.render(mesh, material, info);
+            }
         }
 
     }

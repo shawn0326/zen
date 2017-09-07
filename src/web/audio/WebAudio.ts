@@ -1,6 +1,6 @@
 namespace zen.web {
 
-    export class WebAudio {
+    export class WebAudio implements sound.IAudio {
 
         public audioContext: AudioContext;
 
@@ -34,9 +34,9 @@ namespace zen.web {
             return this._audioBufferCache[audio.guid];
         }
 
-        public decodeAudioData(audio:AudioAsset, sucCallback:() => void, errCallback:() => void) {
-            this.audioContext.decodeAudioData(audio.buffer, (audioBuffer) => {
-                this._audioBufferCache[audio.guid] = audioBuffer;
+        public decodeAudioData(id:string, buffer:ArrayBuffer, sucCallback:() => void, errCallback:() => void) {
+            this.audioContext.decodeAudioData(buffer, (audioBuffer) => {
+                this._audioBufferCache[id] = audioBuffer;
                 sucCallback();
             }, () => {
                 errCallback();

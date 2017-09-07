@@ -1,11 +1,12 @@
 /// <reference path="web/audio/WebAudio.ts" />
 /// <reference path="web/gl/WebGL.ts" />
+/// <reference path="web/http/Http.ts" />
 
 namespace zen {
 
     export let Audio:sound.IAudio = new web.WebAudio();
-
     export let Renderer:renderer.IRenderer = new web.WebGL();
+    export let FileReader:io.IFileReader = new web.Http();
 
     export class Application {
 
@@ -21,6 +22,7 @@ namespace zen {
             // platform
             Audio.init();
             Renderer.init({});
+            FileReader.init();
 
             // logic
             this.systemManager.addSystem(ComponentType.Camera, new CameraComponentSystem(this));
@@ -62,7 +64,6 @@ namespace zen {
             this.doRender();
 
             this.timeInfo.lastFrameTime = now;
-            
         }
 
         private doUpdate(deltaTime:number) {

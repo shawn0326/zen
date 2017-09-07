@@ -20,6 +20,15 @@ namespace zen.web {
                 console.error("!Your browser does not support WebGLContext");
             }
         }
+
+        private glMeshCache = {};
+        private glProgramCache = {};
+
+        public render(mesh:MeshAsset, material:MaterialAsset, info:MeshInfo) {
+            // TODO
+            mesh.guid;
+            material.guid;
+        }
     }
 
 }

@@ -10,6 +10,9 @@ namespace zen {
             if(this.gameObject) {
                 let position = this.gameObject.getPosition();
                 Audio.getAudioListener().setPosition(position.x, position.y, position.z);
+
+                let wtm = this.gameObject.getWorldMatrix();
+                Audio.getAudioListener().setOrientation(wtm);
             }
         }
 

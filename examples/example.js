@@ -66,11 +66,11 @@ var Speak = (function (_super) {
                         return [4 /*yield*/, zen.waitForSeconds(1)];
                     case 1:
                         _a.sent();
-                        console.log("hi!");
+                        // console.log("hi!");
                         return [4 /*yield*/, zen.waitForSeconds(1)];
                     case 2:
+                        // console.log("hi!");
                         _a.sent();
-                        console.log("ha!");
                         return [3 /*break*/, 0];
                     case 3: return [2 /*return*/];
                 }
@@ -83,24 +83,42 @@ var Walk = (function (_super) {
     __extends(Walk, _super);
     function Walk() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.speed = 0;
-        _this.count = 0;
+        _this.speed = 10;
         return _this;
     }
     Walk.prototype.start = function (app) {
-        this.speed = 0.00001;
+        this.app = app;
     };
     Walk.prototype.update = function (deltaTime) {
-        this.count += deltaTime;
         if (this.gameObject) {
             var p = this.gameObject.getPosition();
+            var keyboard = this.app.inputManager.keyboard;
+            if (keyboard.isPressed("a")) {
+                var x = p.x - deltaTime * this.speed;
+                this.gameObject.setPosition(x, p.y, p.z);
+                // console.log(x);
+            }
+            if (keyboard.isPressed("d")) {
+                var x = p.x + deltaTime * this.speed;
+                this.gameObject.setPosition(x, p.y, p.z);
+                // console.log(x);
+            }
+            if (keyboard.isPressed("w")) {
+                console.log(1);
+                var z = p.z + deltaTime * this.speed;
+                this.gameObject.setPosition(p.x, p.y, z);
+                // console.log(x);
+            }
+            if (keyboard.isPressed("s")) {
+                var z = p.z - deltaTime * this.speed;
+                this.gameObject.setPosition(p.x, p.y, z);
+                // console.log(x);
+            }
             // console.log(deltaTime);
-            // this.gameObject.setPosition(0, 0, 2);
-            this.gameObject.setPosition(Math.cos(this.count) * 2, 0, Math.sin(this.count) * 2);
+            // this.gameObject.setPosition(Math.sin(this.count) * 10, 0, 0);
         }
-        if (this.count >= Math.PI * 2) {
-            // console.log("move:" + this.count + ", speed: " + this.speed);
-            this.count = 0;
+        if (app.inputManager.wasPressed()) {
+            console.log(app.inputManager.getTouchPoint().x);
         }
     };
     return Walk;
@@ -126,45 +144,77 @@ function loadArrayBuffer(url, sucCallback, errCallback) {
 }
 var app = new zen.Application();
 app.start();
-var init = false;
-document.onclick = function () {
-    if (init)
-        return;
-    zen.Audio.active();
-    loadArrayBuffer("sound.mp3", function (buffer) {
-        var audio = new zen.AudioAsset("sound.mp3");
-        audio.buffer = buffer;
-        zen.Audio.decodeAudioData(audio, function () {
-            audio.buffer = buffer;
-            audioSourceComponent.audio = audio;
-            audioSourceComponent.use3D = true;
-            audioSourceComponent.loop = true;
-            audioSourceComponent.play();
-        }, function () { });
-    }, function () { });
+app.assetManager.loadAssets([
+    { url: "sounds/358232_j_s_song.mp3" },
+    { url: "sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3" }
+], function (progress) {
+    console.log(progress.current + "/" + progress.total);
+}, onLoad);
+function onLoad() {
+    console.log(app.assetManager.getAsset("def::cube"));
+    var init = false;
+    document.onclick = initSound;
+    document.ontouchstart = initSound;
+    document.onmousedown = initSound;
+    function initSound() {
+        if (init)
+            return;
+        zen.Audio.active();
+        console.log(11);
+        audioSourceComponent.play();
+        audioSourceComponent2.play();
+        // audioSourceComponent3.play();
+        init = true;
+    }
+    var empty = new zen.GameObject(app);
+    // empty.enabled = false;
+    var object = new zen.GameObject(app);
+    object.name = "object";
+    var scriptComponent = new zen.ScriptComponent();
+    var speak = new Speak();
+    var walk = new Walk();
+    walk.speed = 10;
+    scriptComponent.addScript(speak);
+    scriptComponent.addScript(walk);
+    // scriptComponent.enabled = false;
+    object.addComponent(scriptComponent);
     var audioListenerComponent = new zen.AudioListenerComponent();
-    empty2.addComponent(audioListenerComponent);
-    init = true;
-};
-var empty = new zen.GameObject(app);
-// empty.enabled = false;
-var empty2 = new zen.GameObject(app);
-empty2.setPosition(2, 0, 0);
-empty.addChild(empty2);
-var object = new zen.GameObject(app);
-object.name = "object";
-var scriptComponent = new zen.ScriptComponent();
-var speak = new Speak();
-var walk = new Walk();
-walk.speed = 10;
-scriptComponent.addScript(speak);
-scriptComponent.addScript(walk);
-// scriptComponent.enabled = false;
-object.addComponent(scriptComponent);
-var audioSourceComponent = new zen.AudioSourceComponent();
-object.addComponent(audioSourceComponent);
-empty.addChild(object);
-app.sceneManager.activeScene.addChild(empty);
-// zen.waitForSeconds().then(function() {
-//     console.log("11");
-// }); 
+    object.addComponent(audioListenerComponent);
+    empty.addChild(object);
+    var source1 = new zen.GameObject(app);
+    source1.setPosition(10, 0, 5);
+    console.log(source1.getPosition());
+    empty.addChild(source1);
+    var audioSourceComponent = new zen.AudioSourceComponent();
+    var audio = app.assetManager.getAsset("sounds/358232_j_s_song.mp3");
+    audioSourceComponent.audio = audio;
+    audioSourceComponent.use3D = true;
+    audioSourceComponent.loop = true;
+    audioSourceComponent.volume = 0.5;
+    source1.addComponent(audioSourceComponent);
+    var source2 = new zen.GameObject(app);
+    source2.setPosition(-10, 0, 5);
+    console.log(source2.getPosition());
+    empty.addChild(source2);
+    var audioSourceComponent2 = new zen.AudioSourceComponent();
+    var audio2 = app.assetManager.getAsset("sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3");
+    audioSourceComponent2.audio = audio2;
+    audioSourceComponent2.use3D = true;
+    audioSourceComponent2.loop = true;
+    audioSourceComponent2.volume = 0.5;
+    source2.addComponent(audioSourceComponent2);
+    // let source3 = new zen.GameObject(app);
+    // source3.setPosition(0, 0, 10);
+    // empty.addChild(source3);
+    // let audioSourceComponent3 = new zen.AudioSourceComponent();
+    // let audio3 = app.assetManager.getAsset<zen.AudioAsset>("sounds/Project_Utopia.ogg");
+    // audioSourceComponent3.audio = audio3;
+    // audioSourceComponent3.use3D = true;
+    // audioSourceComponent3.loop = true;
+    // audioSourceComponent3.volume = 0.5;
+    // source3.addComponent(audioSourceComponent3);
+    app.sceneManager.activeScene.addChild(empty);
+    // zen.waitForSeconds().then(function() {
+    //     console.log("11");
+    // });
+}
